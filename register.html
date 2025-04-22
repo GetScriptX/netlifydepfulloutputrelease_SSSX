@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCRIPT X - Registration</title>
+    <link rel="icon" type="image/png" href="Images/Logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .error-message {
+            color: #ff4444;
+            margin-top: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        .success-message {
+            color: #00C851;
+            margin-top: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .serial-key-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            display: none;
+        }
+        .serial-key-display p {
+            margin: 0;
+            font-size: 16px;
+            color: #fff;
+        }
+        .serial-key-display .key {
+            font-family: monospace;
+            font-size: 18px;
+            color: #00C851;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .copy-button {
+            background-color: #00C851;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .copy-button:hover {
+            background-color: #007E33;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <img src="Images/Logo.png" alt="SCRIPT X Logo">
+                </a>
+                <a href="index.html">Home</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#accounts">Accounts</a>
+            </div>
+            <div class="nav-right">
+                <a href="https://discord.gg/fkngNbQXaT" class="discord-link" target="_blank">
+                    <img src="Images/DiscordLogo.png" alt="Discord">
+                    Join Discord
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="register">
+            <div class="register-content">
+                <h1>Register for SCRIPT X</h1>
+                <p>Complete the registration process to get access (Will take time to process)</p>
+                
+                <div class="register-form">
+                    <div class="form-group">
+                        <label for="roblox-username">Input Roblox Account Username</label>
+                        <input type="text" id="roblox-username" name="roblox-username" class="serial-key-input" placeholder="Enter your Roblox username" required>
+                        <div class="error-message" id="robloxError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discord-username">Input Discord Username</label>
+                        <input type="text" id="discord-username" name="discord-username" class="serial-key-input" placeholder="Enter your Discord username (not including @ or #)" required>
+                        <div class="error-message" id="discordError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Reason for Purchase</label>
+                        <input type="text" id="reason" name="reason" class="serial-key-input" placeholder="Enter the reason your buying key (Giveaways, Gift, etc)" required>
+                        <div class="error-message" id="reasonError"></div>
+                    </div>
+
+                    <div class="loading" id="loadingIndicator">Validating</div>
+                    <div class="success-message" id="successMessage">Registration successful! Please proceed to payment.</div>
+
+                    <a href="https://www.roblox.com/game-pass/1168940060/ScriptXPurchase" target="_blank" class="robux-button" id="robuxButton">
+                        <img src="Images/RobuxIcon.png" alt="Robux">
+                        Pay R$ 25
+                    </a>
+                </div>
+
+                <div class="returning-customer">
+                    <p>Download Script X</p>
+                    <input type="text" placeholder="Enter your Serial key used during registration">
+                    <button class="download-button" disabled>
+                        <img src="Images/DownloadIcon.png" alt="Download">
+                        Download
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Send any communications or inquiries to syntax.softworks.0@gmail.com</p>
+        <p>Copyright © 2023 Syntax Softworks. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const robloxInput = document.getElementById('roblox-username');
+            const discordInput = document.getElementById('discord-username');
+            const reasonInput = document.getElementById('reason');
+            const robloxError = document.getElementById('robloxError');
+            const discordError = document.getElementById('discordError');
+            const reasonError = document.getElementById('reasonError');
+            const robuxButton = document.getElementById('robuxButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const successMessage = document.getElementById('successMessage');
+
+            // Add click handler to Robux button
+            robuxButton.addEventListener('click', async (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                
+                // Reset error messages
+                robloxError.style.display = 'none';
+                discordError.style.display = 'none';
+                reasonError.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                const robloxUsername = robloxInput.value.trim();
+                const discordUsername = discordInput.value.trim();
+                const reason = reasonInput.value.trim();
+
+                // Basic validation
+                if (!robloxUsername || !discordUsername || !reason) {
+                    if (!robloxUsername) {
+                        robloxError.textContent = 'Please enter your Roblox username';
+                        robloxError.style.display = 'block';
+                    }
+                    if (!discordUsername) {
+                        discordError.textContent = 'Please enter your Discord username';
+                        discordError.style.display = 'block';
+                    }
+                    if (!reason) {
+                        reasonError.textContent = 'Please enter your reason for purchase';
+                        reasonError.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+
+                try {
+                    const response = await fetch('https://abaft-accidental-paste.glitch.me/api/validate-users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            robloxUsername,
+                            discordUsername,
+                            reason
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Registration successful
+                        successMessage.style.display = 'block';
+                        
+                        // Proceed to payment
+                        window.location.href = 'https://www.roblox.com/game-pass/1168940060/ScriptXPurchase';
+                    } else {
+                        // Show validation errors
+                        if (data.details) {
+                            if (!data.details.roblox) {
+                                robloxError.textContent = 'Invalid Roblox username';
+                                robloxError.style.display = 'block';
+                            }
+                            if (!data.details.discord) {
+                                discordError.textContent = 'Invalid Discord username format (not including @)';
+                                discordError.style.display = 'block';
+                            }
+                        } else {
+                            alert('An error occurred during validation');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while validating your information');
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 
